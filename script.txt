@@ -1,0 +1,63 @@
+
+
+CREATE TABLE PTL_MAILINFO
+(
+  CO       VARCHAR2(20 BYTE),
+  SYSID    VARCHAR2(20 BYTE),
+  FID      VARCHAR2(20 BYTE),
+  SUBJECT  VARCHAR2(500 BYTE),
+  CONTENT  VARCHAR2(2000 BYTE),
+  attachment VARCHAR2(20),
+  MAILTO   VARCHAR2(1500 BYTE),
+  MAILCC   VARCHAR2(1500 BYTE),
+  MAILBCC  VARCHAR2(1500 BYTE),
+  CTDAT    VARCHAR2(20 BYTE),
+  CTTM     VARCHAR2(20 BYTE),
+  CTCLASS  VARCHAR2(255 BYTE),
+  txDAT    VARCHAR2(20 BYTE),
+  txTM     VARCHAR2(20 BYTE),
+  txCLASS  VARCHAR2(255 BYTE),
+  repository VARCHAR2(255 BYTE),
+  RETRY    NUMBER(4),
+  SEND     VARCHAR2(20 BYTE),
+  CONSTRAINT pk_ptl_mailinfo PRIMARY KEY(co, sysId, fid, subject, ctdat, cttm, ctclass, repository)
+)
+
+
+
+CREATE TABLE PTL_MAILINFO_HIS
+(
+  uuid VARCHAR2(255 BYTE),
+  CO       VARCHAR2(20 BYTE),
+  SYSID    VARCHAR2(20 BYTE),
+  FID      VARCHAR2(20 BYTE),
+  SUBJECT  VARCHAR2(500 BYTE),
+  CONTENT  VARCHAR2(2000 BYTE),
+  attachment VARCHAR2(20),
+  MAILTO   VARCHAR2(1500 BYTE),
+  MAILCC   VARCHAR2(1500 BYTE),
+  MAILBCC  VARCHAR2(1500 BYTE),
+  CTDAT    VARCHAR2(20 BYTE),
+  CTTM     VARCHAR2(20 BYTE),
+  CTCLASS  VARCHAR2(255 BYTE),
+  txDAT    VARCHAR2(20 BYTE),
+  txTM     VARCHAR2(20 BYTE),
+  txCLASS  VARCHAR2(255 BYTE),
+  repository VARCHAR2(255 BYTE),
+  RETRY    NUMBER(4),
+  SEND     VARCHAR2(20 BYTE),
+  CONSTRAINT pk_ptl_mailinfo_his PRIMARY KEY(uuid)
+)
+
+INSERT
+  INTO PTL_MAILINFO_HIS
+SELECT SYS_GUID()
+       , mail.co, mail.sysId, mail.fId
+	   , mail.subject, mail.content, mail.attachment
+	   , mail.mailto, mail.mailcc, mail.mailbcc
+	   , mail.ctdat, mail.cttm, mail.ctclass
+	   , TO_CHAR(SYSDATE, 'yyyymmdd'), TO_CHAR(SYSDATE, 'hh24miss'), :txClass
+	   , mail.REPOSITORY
+	   , mail.retry
+	   , mail.send
+  FROM PTL_MAILINFO mail
